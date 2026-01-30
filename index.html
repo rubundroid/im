@@ -2892,14 +2892,28 @@ async function autoAdjustBudget() {
             const result = await Swal.fire({
                 title: 'ബജറ്റ് ഗ്യാപ്പ്!',
                 text: `₹ ${(finalDiff/100).toFixed(2)} ബാക്കിയുണ്ട്. "${suggestion.name}" കൂടി ചേർക്കട്ടെ?`,
-                icon: 'question', showCancelButton: true, confirmButtonText: 'ചേർക്കൂ'
+                icon: 'question', 
+                showCancelButton: true, 
+                confirmButtonText: 'ചേർക്കൂ', 
+                cancelButtonText: 'വേണ്ട'
             });
+
+            // 🏆 ഇവിടെയാണ് മാജിക്! യൂസർ എന്ത് അമർത്തിയാലും ഈ ലോഡിംഗ് വരും
+            Swal.fire({
+                title: 'ബജറ്റ് ക്രമീകരിക്കുന്നു...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
             if (result.isConfirmed) {
                 let addQty = Math.floor(finalDiff / suggestion.ratePaise);
                 suggestion.qty = addQty;
                 currentTotalPaise += (addQty * suggestion.ratePaise);
                 selected.push(suggestion);
             }
+            
+            // ലോഡിംഗ് കാണിക്കാൻ ഒരു കുഞ്ഞു ഗ്യാപ്പ് (യൂസർക്ക് ബോധ്യപ്പെടാൻ)
+            await new Promise(r => setTimeout(r, 400));
         }
     }
 
@@ -2913,7 +2927,7 @@ function renderFinal(selected, rows, currentTotalPaise, targetPaise) {
     rows.forEach(row => { 
         const qtyInp = row.querySelector('.qty-input');
         if (qtyInp) {
-            qtyInp.value = 0; 
+            qtyInp.value = ""; 
            
             qtyInp.dispatchEvent(new Event('input', { bubbles: true }));
         }
