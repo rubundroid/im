@@ -662,8 +662,8 @@ margin-top: 10px;
 </div>
 
 
-    <button class="info-card btn-pdf" style="background: #8e44ad;" onclick="downloadSplitPDF()">SAVE SPLIT PDF (KC/Prep)</button>
-    <button class="info-card" style="background: #2980b9; cursor:pointer;" onclick="downloadCombinedPDF()">SAVE COMBINED PDF</button>
+    <button class="info-card btn-pdf" style="background: #8e44ad;" onclick="downloadSplitPDF()">SAVE ↓ SPLIT PDF (KC/Prep)</button>
+    <button class="info-card" style="background: #2980b9; cursor:pointer;" onclick="downloadCombinedPDF()">SAVE ↓ COMBINED PDF</button>
     
  
 
@@ -2754,22 +2754,32 @@ function toggleCategoryMenu() {
 const inputField = document.getElementById('inst-details'); 
 
 
-inputField.addEventListener('blur', async () => {
+const formID = "1FAIpQLSd5X69WBI4gCtzYrfM6Cl9mz_AZ7pceQa1N7PVFtdD24stQMw"; 
+const entryLocation = "entry.819565876"; 
+const entryEvent = "entry.281654567";
+const entryInstitution = "entry.1879993025"; 
+
+
+async function trackUser(currentName) {
     
-    const instName = inputField.value.trim();
-    const today = new Date().toISOString().slice(0, 10); 
+    const today = new Date().toISOString().slice(0, 10);
+    const lastDate = localStorage.getItem('last_track_date');
+    const lastType = localStorage.getItem('last_track_type'); 
 
 
-    if (instName && localStorage.getItem('last_track_date') !== today) {
+    
+    const isNewDay = lastDate !== today;
+    const isUpgrade = (lastType === 'unknown' && currentName !== "Not Provided");
 
-        console.log("Tracking process started for: " + instName);
+    if (isNewDay || isUpgrade) {
+        
+        console.log("Tracking started for: " + currentName);
         let userLocation = "Unknown";
 
- 
+   
         try {
             const geoResponse = await fetch('https://ipapi.co/json/');
             const geoData = await geoResponse.json();
-            
             if(geoData.city && geoData.region) {
                 userLocation = `${geoData.city}, ${geoData.region}`;
             }
@@ -2777,28 +2787,48 @@ inputField.addEventListener('blur', async () => {
             console.log("Location fetch failed, using default.");
         }
 
-  
-        const formID = "1FAIpQLSd5X69WBI4gCtzYrfM6Cl9mz_AZ7pceQa1N7PVFtdD24stQMw"; 
-        const entryLocation = "entry.819565876"; 
-        const entryEvent = "entry.281654567";
-        const entryInstitution = "entry.1879993025"; 
+    
+        const trackerUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?usp=pp_url&${entryEvent}=AutoTracked&${entryLocation}=${encodeURIComponent(userLocation)}&${entryInstitution}=${encodeURIComponent(currentName)}&submit=Submit`;
 
-        const trackerUrl = `https://docs.google.com/forms/d/e/${formID}/formResponse?usp=pp_url&${entryEvent}=AutoTracked&${entryLocation}=${encodeURIComponent(userLocation)}&${entryInstitution}=${encodeURIComponent(instName)}&submit=Submit`;
-
-
+     
         fetch(trackerUrl, {
             method: 'POST',
             mode: 'no-cors'
         })
         .then(() => {
-
+       
             localStorage.setItem('last_track_date', today);
-            console.log("Successfully tracked: " + instName);
+            
+        
+            if (currentName !== "Not Provided") {
+                localStorage.setItem('last_track_type', 'named');
+            } else {
+                localStorage.setItem('last_track_type', 'unknown');
+            }
+            
+            console.log("Successfully tracked: " + currentName);
         })
         .catch(e => console.log("Tracking error: ", e));
 
     } else {
-        console.log("Skipped: Either empty name or already tracked today.");
+        console.log("Skipped: Already tracked properly for today.");
+    }
+}
+
+
+window.addEventListener('load', () => {
+
+    const val = inputField.value.trim();
+
+    trackUser(val ? val : "Not Provided");
+});
+
+
+inputField.addEventListener('blur', () => {
+    const instName = inputField.value.trim();
+
+    if (instName) {
+        trackUser(instName);
     }
 });
 
