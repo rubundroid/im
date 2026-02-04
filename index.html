@@ -3055,50 +3055,83 @@ function updateIndentInput(val) {
 function setupIndentTypeLogic() {
     const indentSelect = document.getElementById("indent-select");
     const indentInput = document.getElementById("indent-type");
-    
+
     const now = new Date();
-    const month = now.getMonth() + 1; // 1-12
+    const month = now.getMonth(); 
     const year = now.getFullYear();
-    const shortYear = year.toString().substring(2);
-    const nextYear = (year + 1).toString().substring(2);
-    const prevYear = (year - 1).toString().substring(2);
-
-
-    const academicYear = (month === 12) ? `${shortYear}-${nextYear}` : 
-                         (month <= 3) ? `${prevYear}-${shortYear}` : `${shortYear}-${nextYear}`;
-
-    const t1 = `Term-I/${academicYear}`;
-    const t2 = `Term-II/${academicYear}`;
-    const t3 = `Term-III/${academicYear}`;
-
+    
+   
+    const shortNextYear = (year + 1).toString().substring(2);
+    
   
-    let allOptions = [t1, "LSGD", "Custom Input...", "NAM", t2, t3];
-
- 
-    let currentTerm = "";
-    if (month === 12 || month <= 3) currentTerm = t1;
-    else if (month >= 4 && month <= 7) currentTerm = t2;
-    else currentTerm = t3;
+    const yearString = `${year}-${shortNextYear}`;
 
    
-    allOptions = allOptions.filter(opt => opt !== currentTerm);
-    allOptions.unshift(currentTerm);
+    const t1 = `Term - I / ${yearString}`;
+    const t2 = `Term - II / ${yearString}`;
+    const t3 = `Term - III / ${yearString}`;
 
+   
+    const staticOptions = ["LSGD", "Custom Input...", "NAM"];
   
+    const termOptions = [t1, t2, t3];
+
+    let finalOptions = [];
+    let priorityTerm = "";
+
+   
+    if (month === 0 || month === 1) {
+        priorityTerm = t1;
+    }
+    
+    else if (month === 4 || month === 5) {
+        priorityTerm = t2;
+    }
+   
+    else if (month === 8 || month === 9) {
+        priorityTerm = t3;
+    }
+
+    
+    if (priorityTerm) {
+       
+        finalOptions.push(priorityTerm);
+        
+        
+        finalOptions = finalOptions.concat(staticOptions);
+        
+     
+        termOptions.forEach(term => {
+            if (term !== priorityTerm) {
+                finalOptions.push(term);
+            }
+        });
+
+    } else {
+       
+        // 1. LSGD, Custom, NAM
+        finalOptions = finalOptions.concat(staticOptions);
+        // 2. T1, T2, T3
+        finalOptions = finalOptions.concat(termOptions);
+    }
+
+    
     indentSelect.innerHTML = ""; 
-    allOptions.forEach(opt => {
+    finalOptions.forEach(opt => {
         let option = document.createElement("option");
+        
        
         option.value = (opt === "Custom Input...") ? "user-input" : opt;
         option.text = opt;
         indentSelect.appendChild(option);
     });
 
- 
+
     if (!indentInput.value) {
         indentInput.value = indentSelect.value;
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     filterByCategory(0, 0, 'ALL');
@@ -3125,4 +3158,3 @@ function silentFilter(typeName) {
 </script>
 </body>
 </html>
-
