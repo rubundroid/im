@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="ml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indent Maker - Presentation</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&family=Poppins:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-blue: #0b3954;
+        --accent-teal: #087e8b;
+        --light-bg: #f5f7fa;
+        --text-dark: #333333;
+        --text-light: #ffffff;
+        --highlight: #ff5a5f;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Manjari", "Poppins", sans-serif;
+        background-color: var(--text-dark);
+        overflow: hidden; /* സ്ലൈഡ് അല്ലാതെ വേറെ സ്ക്രോളിംഗ് ഒഴിവാക്കാൻ */
+        color: var(--text-dark);
+      }
+
+      .presentation-container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--light-bg);
+        opacity: 0;
+        transition:
+          opacity 0.5s ease-in-out,
+          transform 0.5s ease-in-out;
+        transform: translateX(100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 80px;
+        z-index: 1;
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0);
+        z-index: 10;
+      }
+
+      .slide.previous {
+        transform: translateX(-100%);
+      }
+
+      /* ഡിസൈൻ എലമെന്റുകൾ */
+      .slide-content {
+        width: 100%;
+        max-width: 1100px;
+        background: #ffffff;
+        padding: 50px;
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border-top: 8px solid var(--primary-blue);
+        position: relative;
+      }
+
+      .slide-title {
+        font-size: 2.5rem;
+        color: var(--primary-blue);
+        margin-bottom: 30px;
+        border-bottom: 2px solid var(--accent-teal);
+        padding-bottom: 15px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 800;
+      }
+
+      .slide-text {
+        font-size: 1.5rem;
+        line-height: 1.8;
+        margin-bottom: 20px;
+      }
+
+      .slide-text strong {
+        color: var(--accent-teal);
+      }
+
+      .icon-box {
+        font-size: 3rem;
+        color: var(--accent-teal);
+        margin-bottom: 20px;
+      }
+
+      ul {
+        list-style-type: none;
+        margin-left: 20px;
+      }
+
+      ul li {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 40px;
+        line-height: 1.6;
+      }
+
+      ul li i {
+        position: absolute;
+        left: 0;
+        top: 5px;
+        color: var(--accent-teal);
+      }
+
+      /* രണ്ട് കോളം ലേഔട്ട് */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+
+      /* ടൈറ്റിൽ സ്ലൈഡ് പ്രത്യേകം ഡിസൈൻ */
+      .title-slide {
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--accent-teal)
+        );
+        color: var(--text-light);
+        text-align: center;
+        border: none;
+      }
+      .title-slide h1 {
+        font-size: 4rem;
+        font-family: "Poppins", sans-serif;
+        margin-bottom: 20px;
+      }
+      .title-slide h2 {
+        font-size: 2rem;
+        font-weight: 400;
+        margin-bottom: 40px;
+        opacity: 0.9;
+      }
+      .author-tag {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px 30px;
+        border-radius: 50px;
+        display: inline-block;
+        font-size: 1.2rem;
+        backdrop-filter: blur(5px);
+      }
+
+      /* നാവിഗേഷൻ കൺട്രോളുകൾ */
+      .controls {
+        position: fixed;
+        bottom: 30px;
+        right: 40px;
+        z-index: 100;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .control-btn {
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+      }
+
+      .control-btn:hover {
+        background-color: var(--accent-teal);
+        transform: scale(1.1);
+      }
+
+      .slide-counter {
+        font-size: 1.2rem;
+        font-family: "Poppins", sans-serif;
+        color: var(--text-dark);
+        background: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .highlight-box {
+        background: #e0f7fa;
+        padding: 20px;
+        border-left: 5px solid var(--accent-teal);
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="presentation-container" id="presentation">
+      <!-- Slide 1: Title -->
+      <div class="slide active">
+        <div class="slide-content title-slide">
+          <div class="icon-box" style="color: white; font-size: 5rem">
+            <i class="fa-solid fa-laptop-medical"></i>
+          </div>
+          <h1>Indent Maker</h1>
+          <h2>ആയുർവേദ ഇൻഡന്റിംഗ് സംവിധാനത്തിലെ ഡിജിറ്റൽ വിപ്ലവം</h2>
+          <div class="author-tag">
+            <i class="fa-solid fa-user-tie"></i> തയ്യാറാക്കിയത്:
+            <strong>രാമകൃഷ്ണൻ കെ</strong> (Ayurveda Pharmacist)
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: History -->
+      <div class="slide">
+        <div class="slide-content">
+          <h2 class="slide-title">പഴയ രീതികളും വെല്ലുവിളികളും</h2>
+          <div class="grid-2">
+            <div>
+              <ul>
+                <li>
+                  <i class="fa-solid fa-pen-nib"></i>
+                  <strong>2021-ന് മുൻപ്:</strong> വിലവിവര പട്ടിക നോക്കി
+                  പൂർണ്ണമായും കൈകൊണ്ട് എഴുതി തയ്യാറാക്കിയിരുന്ന ഇൻഡന്റുകൾ.
+                </li>
+                <li>
+                  <i class="fa-solid fa-file-excel"></i>
+                  <strong>2021 മുതൽ:</strong> Excel Macro ടൂളുകളുടെ വരവ്. എന്നാൽ
+                  മാക്രോ Enable ചെയ്യാൻ കഴിയാത്തവർക്ക് ഇത് വലിയൊരു
+                  ബുദ്ധിമുട്ടായിരുന്നു.
+                </li>
+                <li>
+                  <i class="fa-solid fa-calculator"></i>
+                  <strong>ബജറ്റ് പ്രശ്നം:</strong> അനുവദിച്ച തുകയിൽ (ഉദാ: 30,000
+                  രൂപ) ഇൻഡന്റ് കൃത്യമായി ഒപ്പിച്ചെടുക്കാൻ ഈ പഴയ ടൂളുകളിൽ യാതൊരു
+                  മാർഗ്ഗവും ഉണ്ടായിരുന്നില്ല.
+                </li>
+              </ul>
+            </div>
+            <div
+              style="
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <i
+                class="fa-solid fa-triangle-exclamation"
+                style="font-size: 10rem; color: var(--highlight); opacity: 0.8"
+              ></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Indent Categories -->
+      <div class="slide">
+        <div class="slide-content">
+          <h2 class="slide-title">ഇൻഡന്റുകളുടെ തരംതിരിവ്</h2>
+          <div class="grid-2">
+            <div
+              style="
+                background: var(--light-bg);
+                padding: 30px;
+                border-radius: 10px;
+              "
+            >
+              <div class="icon-box">
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <h3>Term Indents (വർഷത്തിൽ 3 തവണ)</h3>
+              <p class="slide-text" style="font-size: 1.2rem; margin-top: 15px">
+                ഏകദേശം 30,000 രൂപയുടെ ഇൻഡന്റുകൾ. ഇവ നിർബന്ധമായും
+                <strong>KC/KSC</strong> എന്നും <strong>Prepared</strong> എന്നും
+                രണ്ട് ലിസ്റ്റുകളായി നൽകണം. ഇത് മാന്വലായി ചെയ്യുക വളരെ
+                ശ്രമകരമാണ്.
+              </p>
+            </div>
+            <div
+              style="
+                background: var(--light-bg);
+                padding: 30px;
+                border-radius: 10px;
+              "
+            >
+              <div class="icon-box">
+                <i class="fa-solid fa-building-columns"></i>
+              </div>
+              <h3>LSGD / Plan / NAM / Other Indents</h3>
+              <p class="slide-text" style="font-size: 1.2rem; margin-top: 15px">
+                ലോക്കൽ ബോഡി ഫണ്ട് വഴി 10 ലക്ഷം മുതൽ ലഭ്യമാകുന്ന വലിയ ഇൻഡന്റുകൾ.
+                Excel ടൂൾ ഉപയോഗിച്ച് ഇത്തരം വലിയ ഡാറ്റ കൈകാര്യം ചെയ്യുന്നത്
+                പ്രായോഗികമായിരുന്നില്ല.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Solution 1 - Auto Split -->
+      <div class="slide">
+        <div class="slide-content">
+          <h2 class="slide-title">
+            പരിഹാരം 1: ഓട്ടോ സ്പ്ലിറ്റിംഗ് (Auto-Split)
+          </h2>
+          <ul>
+            <li>
+              <i class="fa-solid fa-code-branch"></i>
+              <strong>രണ്ട് PDF-കൾ നിമിഷങ്ങൾക്കുള്ളിൽ:</strong> Indent Maker-ൽ
+              ഒറ്റത്തവണ ഡാറ്റ അടിച്ചാൽ മതി. ടേം ഇൻഡന്റുകൾക്ക് വേണ്ട KC/KSC,
+              Prepared ലിസ്റ്റുകൾ തനിയെ രണ്ട് PDF ആയി സെറ്റ് ചെയ്തു തരും.
+            </li>
+            <li>
+              <i class="fa-solid fa-scale-balanced"></i>
+              <strong>കൃത്യമായ ബജറ്റ് വിഭജനം:</strong> ബജറ്റ് തുക ഈ രണ്ട്
+              ലിസ്റ്റുകളിലുമായി കൃത്യമായി സ്പ്ലിറ്റ് ചെയ്ത് ടോട്ടൽ കാണിക്കുന്നു.
+            </li>
+            <li>
+              <i class="fa-solid fa-bolt"></i>
+              <strong>വേഗത:</strong> മണിക്കൂറുകൾ എടുത്തിരുന്ന ഈ ബജറ്റ്
+              കാൽക്കുലേഷൻ ഇപ്പോൾ വിരൽത്തുമ്പിൽ സാധ്യമാകുന്നു.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 5: Solution 2 - Smart Auto-Fill -->
+      <div class="slide">
+        <div class="slide-content">
+          <h2 class="slide-title">
+            പരിഹാരം 2: സ്മാർട്ട് ഓട്ടോ ഫിൽ & പ്രൊജക്ഷൻ
+          </h2>
+          <div class="grid-2">
+            <div>
+              <p class="slide-text">
+                ഒരു ദിവസത്തെ ആവശ്യത്തിനുള്ള മരുന്നുകളുടെ അളവ് മാത്രം നൽകുക.
+                സിസ്റ്റം അതിനെ ആനുപാതികമായി (Proportionally):
+              </p>
+              <ul>
+                <li>
+                  <i class="fa-solid fa-arrow-trend-up"></i> 30,000 രൂപയിലേക്കോ,
+                </li>
+                <li>
+                  <i class="fa-solid fa-chart-line"></i> അല്ലെങ്കിൽ 20 ലക്ഷം
+                  രൂപയുടെ LSGD ബജറ്റിലേക്കോ
+                  <strong>കൃത്യമായി പ്രൊജക്റ്റ് ചെയ്ത് (Project)</strong>
+                  എടുക്കും.
+                </li>
+              </ul>
+            </div>
+            <div class="highlight-box">
+              <h3><i class="fa-solid fa-lock"></i> Locking Features</h3>
+              <p style="font-size: 1.2rem; margin-top: 10px">
+                നാല് മാസത്തേക്ക് സ്ഥിരമായി വേണ്ട കഷായം (KC/KSC) അളവുകളോ, ബോക്സ്
+                പാക്കിംഗ് അളവുകളോ <strong>ലോക്ക് (Lock)</strong> ചെയ്തു വെച്ച്
+                ബാക്കിയുള്ളവ മാത്രം ഓട്ടോ ഫിൽ ചെയ്യാം.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: Doctor's Choice -->
+      <div class="slide">
+        <div class="slide-content">
+          <h2 class="slide-title">ആയുർവേദത്തിന്റെ സവിശേഷത: ഡോക്ടറുടെ ചോയ്സ്</h2>
+          <div style="text-align: center; padding: 30px">
+            <i
+              class="fa-solid fa-user-doctor"
+              style="
+                font-size: 5rem;
+                color: var(--primary-blue);
+                margin-bottom: 20px;
+              "
+            ></i>
+            <p class="slide-text" style="font-style: italic; font-size: 1.8rem">
+              "മോഡേൺ മെഡിസിൻ പോലെയല്ല ആയുർവേദം; ഡോക്ടറുടെ ചികിത്സാ രീതിക്കും
+              താല്പര്യത്തിനും അനുസരിച്ച് ഉപയോഗിക്കുന്ന മരുന്നുകളിൽ വലിയ
+              മാറ്റമുണ്ടാകും."
+            </p>
+          </div>
+          <p class="slide-text">
+            ബുദ്ധിമുട്ടുകൾ കാരണം കോമൺ ഇൻഡന്റുകൾ വിതരണം ചെയ്യുന്നതിന് പകരം, ഈ
+            ആപ്പ് ഉപയോഗിച്ച്
+            <strong
+              >ഓരോ ഡോക്ടർക്കും ആവശ്യമുള്ള മരുന്നുകൾ ഉൾപ്പെടുത്തിക്കൊണ്ട്</strong
+            >
+            എളുപ്പത്തിൽ ഇൻഡന്റ് തയ്യാറാക്കാം.
+          </p>
+        </div>
+      </div>
+
+      <!-- Slide 7: Automation & Efficiency -->
+      <div class="slide">
+        <div class="slide-content">
+          <h2 class="slide-title">ബജറ്റ് ഫില്ലിംഗ് & സ്മാർട്ട് ഡിസൈൻ</h2>
+          <ul>
+            <li>
+              <i class="fa-solid fa-fill-drip"></i>
+              <strong>ബജറ്റ് ഫില്ലിംഗ് (Budget Filling):</strong> ഓട്ടോ ഫിൽ
+              ഉപയോഗിച്ച് സർക്കാരിൽ നിന്നും അനുവദിച്ച തുകയുടെ അവസാന രൂപ വരെ
+              പരമാവധി ഉപയോഗിക്കാൻ കഴിയുന്നു. ഫണ്ട് പാഴാകുന്നില്ല.
+            </li>
+            <li>
+              <i class="fa-solid fa-robot"></i>
+              <strong>സ്മാർട്ട് ഡ്രോപ്പ്-ഡൗൺ:</strong> ടേം ഇൻഡന്റ് കൊടുക്കേണ്ട
+              മാസങ്ങളിൽ ആ പേര് തനിയെ ഡ്രോപ്പ്-ഡൗണിൽ മുകളിൽ വരും. മറ്റ് സമയങ്ങളിൽ
+              LSGD മുകളിൽ വരും. ജോലിയുടെ ഭാരം കുറയ്ക്കുന്നു.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 8: Technical Brilliance -->
+      <div class="slide">
+        <div class="slide-content">
+          <h2 class="slide-title">ഏത് ഉപകരണത്തിലും ലഭ്യമായ സാങ്കേതികവിദ്യ</h2>
+          <div class="grid-2" style="text-align: center">
+            <div>
+              <i class="fa-solid fa-cloud-arrow-up icon-box"></i>
+              <h3>Google Firebase Cloud</h3>
+              <p class="slide-text" style="font-size: 1.2rem">
+                ഗൂഗിൾ ലോഗിൻ ഉപയോഗിച്ച് ഡാറ്റ സുരക്ഷിതമായി ക്ലൗഡിൽ സൂക്ഷിക്കാം.
+              </p>
+            </div>
+            <div>
+              <i class="fa-solid fa-mobile-screen-button icon-box"></i>
+              <h3>Cross-Platform</h3>
+              <p class="slide-text" style="font-size: 1.2rem">
+                കമ്പ്യൂട്ടർ, ഫോൺ, ടാബ് തുടങ്ങി ഇന്റർനെറ്റുള്ള ഏത് ഉപകരണത്തിലും
+                പ്രവർത്തിക്കുന്നു.
+              </p>
+            </div>
+          </div>
+          <div class="highlight-box" style="text-align: center">
+            <strong
+              >ഇംഗ്ലീഷ് വായിക്കാൻ കഴിയുന്ന ആർക്കും, മരുന്നുകളുടെ ഏകദേശ റേഷ്യോ
+              പറഞ്ഞു കൊടുത്താൽ ഡോക്ടർ ഉദ്ദേശിച്ച ഇൻഡന്റ് നിമിഷങ്ങൾക്കുള്ളിൽ
+              തയ്യാറാക്കാം!</strong
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: Thank You -->
+      <div class="slide">
+        <div
+          class="slide-content title-slide"
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <i
+            class="fa-regular fa-circle-check"
+            style="font-size: 6rem; color: white; margin-bottom: 20px"
+          ></i>
+          <h1>നന്ദി!</h1>
+          <h2>ജോലി ഭാരം കുറക്കാം, കൃത്യത കൂട്ടാം.</h2>
+          <div style="margin-top: 30px">
+            <p style="font-size: 1.2rem; opacity: 0.8">
+              ചോദ്യങ്ങളും നിർദ്ദേശങ്ങളും സ്വാഗതം ചെയ്യുന്നു.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls">
+      <button
+        class="control-btn"
+        id="prevBtn"
+        title="Previous Slide (Left Arrow)"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <div class="slide-counter">
+        <span id="currentSlideNum">1</span> / <span id="totalSlidesNum">9</span>
+      </div>
+      <button class="control-btn" id="nextBtn" title="Next Slide (Right Arrow)">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <script>
+      // Slide Navigation Logic
+      const slides = document.querySelectorAll(".slide");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const currentSlideNum = document.getElementById("currentSlideNum");
+      const totalSlidesNum = document.getElementById("totalSlidesNum");
+
+      let currentSlide = 0;
+      totalSlidesNum.textContent = slides.length;
+
+      function updateSlides() {
+        slides.forEach((slide, index) => {
+          slide.classList.remove("active", "previous");
+          if (index === currentSlide) {
+            slide.classList.add("active");
+          } else if (index < currentSlide) {
+            slide.classList.add("previous");
+          }
+        });
+        currentSlideNum.textContent = currentSlide + 1;
+
+        // ബട്ടണുകളുടെ ഡിസൈൻ അപ്ഡേറ്റ് ചെയ്യാൻ
+        prevBtn.style.opacity = currentSlide === 0 ? "0.5" : "1";
+        prevBtn.style.cursor = currentSlide === 0 ? "not-allowed" : "pointer";
+
+        nextBtn.style.opacity =
+          currentSlide === slides.length - 1 ? "0.5" : "1";
+        nextBtn.style.cursor =
+          currentSlide === slides.length - 1 ? "not-allowed" : "pointer";
+      }
+
+      function goToNext() {
+        if (currentSlide < slides.length - 1) {
+          currentSlide++;
+          updateSlides();
+        }
+      }
+
+      function goToPrev() {
+        if (currentSlide > 0) {
+          currentSlide--;
+          updateSlides();
+        }
+      }
+
+      // Button Clicks
+      nextBtn.addEventListener("click", goToNext);
+      prevBtn.addEventListener("click", goToPrev);
+
+      // Keyboard Arrow Keys
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === " ") {
+          goToNext();
+        } else if (e.key === "ArrowLeft") {
+          goToPrev();
+        }
+      });
+
+      // Initialize
+      updateSlides();
+    </script>
+  </body>
+</html>
