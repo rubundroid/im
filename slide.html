@@ -149,6 +149,19 @@
         text-align: center;
         border: none;
       }
+
+      /* ലോഗോ സ്റ്റൈൽ */
+      .app-logo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        background-color: white; /* ട്രാൻസ്പരന്റ് ലോഗോ ആണെങ്കിൽ നല്ലതായിരിക്കാൻ */
+      }
+
       .title-slide h1 {
         font-size: 4rem;
         font-family: "Poppins", sans-serif;
@@ -219,12 +232,14 @@
   </head>
   <body>
     <div class="presentation-container" id="presentation">
-      <!-- Slide 1: Title -->
+      <!-- Slide 1: Title (ലോഗോ ചേർത്തത്) -->
       <div class="slide active">
         <div class="slide-content title-slide">
-          <div class="icon-box" style="color: white; font-size: 5rem">
-            <i class="fa-solid fa-laptop-medical"></i>
-          </div>
+          <img
+            src="https://indentmaker.rubundroid.com/logo.png"
+            alt="Indent Maker Logo"
+            class="app-logo"
+          />
           <h1>Indent Maker</h1>
           <h2>ആയുർവേദ ഇൻഡന്റിംഗ് സംവിധാനത്തിലെ ഡിജിറ്റൽ വിപ്ലവം</h2>
           <div class="author-tag">
@@ -482,7 +497,7 @@
             style="font-size: 6rem; color: white; margin-bottom: 20px"
           ></i>
           <h1>നന്ദി!</h1>
-          <h2>ജോലി ഭാരം കുറക്കാം, കൃത്യത കൂട്ടാം.</h2>
+          <h2>ജോലി ഭാരം കുറക്കാം, കൃത്യത കൂട്ടാം, സമയം ലഭിക്കാം.</h2>
           <div style="margin-top: 30px">
             <p style="font-size: 1.2rem; opacity: 0.8">
               ചോദ്യങ്ങളും നിർദ്ദേശങ്ങളും സ്വാഗതം ചെയ്യുന്നു.
