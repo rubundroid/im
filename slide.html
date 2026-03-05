@@ -228,6 +228,77 @@
         border-radius: 5px;
         margin-top: 20px;
       }
+      /* മൊബൈൽ ഫോണുകൾക്ക് വേണ്ടിയുള്ള CSS (Desktop-നെ ബാധിക്കില്ല) */
+      @media (max-width: 768px) {
+        .slide {
+          padding: 15px; /* ഫോണിൽ സ്ക്രീനിന് ചുറ്റുമുള്ള ഗ്യാപ്പ് കുറക്കാൻ */
+        }
+        .slide-content {
+          padding: 25px 20px;
+          max-height: 85vh; /* കണ്ടെന്റ് കൂടുതലായാൽ സ്ക്രോൾ ചെയ്യാൻ */
+          overflow-y: auto;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr; /* ഫോണിൽ 2 കോളം മാറ്റി 1 കോളം ആക്കാൻ */
+          gap: 20px;
+        }
+        /* അക്ഷരങ്ങളുടെ വലിപ്പം ഫോണിന് അനുസരിച്ച് ചെറുതാക്കാൻ */
+        .title-slide h1 {
+          font-size: 2.2rem;
+        }
+        .title-slide h2 {
+          font-size: 1.2rem;
+          margin-bottom: 25px;
+        }
+        .slide-title {
+          font-size: 1.6rem;
+          margin-bottom: 20px;
+        }
+        .slide-text,
+        ul li {
+          font-size: 1.1rem;
+          line-height: 1.6;
+        }
+        .icon-box {
+          font-size: 2rem;
+          margin-bottom: 10px;
+        }
+        .app-logo {
+          width: 100px;
+          height: 100px;
+        }
+        .author-tag {
+          font-size: 1rem;
+          padding: 10px 20px;
+        }
+
+        /* വലിയ ഐക്കണുകൾ ചെറുതാക്കാൻ */
+        .fa-triangle-exclamation {
+          font-size: 5rem !important;
+        }
+        .fa-user-doctor {
+          font-size: 4rem !important;
+        }
+        .title-slide .fa-circle-check {
+          font-size: 4rem !important;
+        }
+
+        /* നാവിഗേഷൻ ബട്ടണുകൾ ഒതുക്കി വെക്കാൻ */
+        .controls {
+          bottom: 15px;
+          right: 15px;
+          gap: 10px;
+        }
+        .control-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+        }
+        .slide-counter {
+          font-size: 1rem;
+          padding: 5px 12px;
+        }
+      }
     </style>
   </head>
   <body>
