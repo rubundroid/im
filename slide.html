@@ -2,7 +2,11 @@
 <html lang="ml">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ഫോണിലെ സൂം ഔട്ട് പ്രശ്നം ഒഴിവാക്കാൻ ഇതിൽ മാറ്റം വരുത്തിയിട്ടുണ്ട് -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Indent Maker - Presentation</title>
     <!-- Google Fonts & FontAwesome -->
     <link
@@ -33,14 +37,17 @@
       body {
         font-family: "Manjari", "Poppins", sans-serif;
         background-color: var(--text-dark);
-        overflow: hidden; /* സ്ലൈഡ് അല്ലാതെ വേറെ സ്ക്രോളിംഗ് ഒഴിവാക്കാൻ */
+        width: 100%;
+        height: 100vh;
+        overflow: hidden; /* സൂം ഔട്ട് തടയുന്നു */
         color: var(--text-dark);
       }
 
       .presentation-container {
-        width: 100vw;
+        width: 100%; /* 100vw മാറ്റി 100% ആക്കി */
         height: 100vh;
         position: relative;
+        overflow: hidden; /* മൊബൈലിൽ ബാക്കി സ്ലൈഡുകൾ ഹൈഡ് ചെയ്യുന്നു (Main Fix) */
       }
 
       .slide {
@@ -159,7 +166,7 @@
         border: 4px solid white;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         margin-bottom: 20px;
-        background-color: white; /* ട്രാൻസ്പരന്റ് ലോഗോ ആണെങ്കിൽ നല്ലതായിരിക്കാൻ */
+        background-color: white;
       }
 
       .title-slide h1 {
@@ -228,15 +235,17 @@
         border-radius: 5px;
         margin-top: 20px;
       }
+
       /* മൊബൈൽ ഫോണുകൾക്ക് വേണ്ടിയുള്ള CSS (Desktop-നെ ബാധിക്കില്ല) */
       @media (max-width: 768px) {
         .slide {
-          padding: 15px; /* ഫോണിൽ സ്ക്രീനിന് ചുറ്റുമുള്ള ഗ്യാപ്പ് കുറക്കാൻ */
+          padding: 10px; /* ഫോണിൽ സ്ക്രീനിന് ചുറ്റുമുള്ള ഗ്യാപ്പ് കുറച്ചു */
         }
         .slide-content {
           padding: 25px 20px;
-          max-height: 85vh; /* കണ്ടെന്റ് കൂടുതലായാൽ സ്ക്രോൾ ചെയ്യാൻ */
-          overflow-y: auto;
+          max-height: 90vh;
+          width: 100%;
+          overflow-y: auto; /* കണ്ടെന്റ് കൂടുതലായാൽ സ്ക്രോൾ ചെയ്യാൻ */
         }
         .grid-2 {
           grid-template-columns: 1fr; /* ഫോണിൽ 2 കോളം മാറ്റി 1 കോളം ആക്കാൻ */
@@ -251,13 +260,13 @@
           margin-bottom: 25px;
         }
         .slide-title {
-          font-size: 1.6rem;
+          font-size: 1.5rem;
           margin-bottom: 20px;
         }
         .slide-text,
         ul li {
-          font-size: 1.1rem;
-          line-height: 1.6;
+          font-size: 1rem;
+          line-height: 1.5;
         }
         .icon-box {
           font-size: 2rem;
@@ -268,13 +277,13 @@
           height: 100px;
         }
         .author-tag {
-          font-size: 1rem;
-          padding: 10px 20px;
+          font-size: 0.9rem;
+          padding: 10px 15px;
         }
 
         /* വലിയ ഐക്കണുകൾ ചെറുതാക്കാൻ */
         .fa-triangle-exclamation {
-          font-size: 5rem !important;
+          font-size: 4rem !important;
         }
         .fa-user-doctor {
           font-size: 4rem !important;
@@ -285,9 +294,9 @@
 
         /* നാവിഗേഷൻ ബട്ടണുകൾ ഒതുക്കി വെക്കാൻ */
         .controls {
-          bottom: 15px;
-          right: 15px;
-          gap: 10px;
+          bottom: 10px;
+          right: 10px;
+          gap: 8px;
         }
         .control-btn {
           width: 40px;
@@ -295,7 +304,7 @@
           font-size: 1rem;
         }
         .slide-counter {
-          font-size: 1rem;
+          font-size: 0.9rem;
           padding: 5px 12px;
         }
       }
@@ -315,7 +324,7 @@
           <h2>ആയുർവേദ ഇൻഡന്റിംഗ് സംവിധാനത്തിലെ ഡിജിറ്റൽ വിപ്ലവം</h2>
           <div class="author-tag">
             <i class="fa-solid fa-user-tie"></i> തയ്യാറാക്കിയത്:
-            <strong>രാമകൃഷ്ണൻ കെ</strong> (Ayurveda Pharmacist)
+            <strong>രാമകൃഷ്ണൻ കെ</strong> (Ayurvedic Pharmacist)
           </div>
         </div>
       </div>
@@ -568,7 +577,7 @@
             style="font-size: 6rem; color: white; margin-bottom: 20px"
           ></i>
           <h1>നന്ദി!</h1>
-          <h2>ജോലി ഭാരം കുറക്കാം, കൃത്യത കൂട്ടാം, സമയം ലഭിക്കാം.</h2>
+          <h2>ജോലി ഭാരം കുറക്കാം, കൃത്യത കൂട്ടാം, സമയം ലാഭിക്കാം.</h2>
           <div style="margin-top: 30px">
             <p style="font-size: 1.2rem; opacity: 0.8">
               ചോദ്യങ്ങളും നിർദ്ദേശങ്ങളും സ്വാഗതം ചെയ്യുന്നു.
