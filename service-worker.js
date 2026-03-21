@@ -1,4 +1,4 @@
-const CACHE_NAME = 'indent-maker-v5'; 
+const CACHE_NAME = 'indent-maker-v7'; 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
