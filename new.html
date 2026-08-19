@@ -1743,6 +1743,7 @@
     }
     function toggleView() {const viewBtn = document.getElementById("view-btn"); const isShowingSelected = viewBtn && viewBtn.innerText.includes("SHOW ALL"); if (isShowingSelected) {filterByCategory(0, 0, "ALL"); updateButtonUI(!1)} else {showSummaryGrid((mode) => {const rows = document.querySelectorAll("#product-body tr"); let counter = 1; if (mode === "SELECTED") {rows.forEach((row) => {const qtyInput = row.querySelector(".qty-input"); const qty = parseFloat(qtyInput.value) || 0; const matchesType = currentTypeFilter === "ALL" || row.getAttribute("data-type") === currentTypeFilter; if (qty > 0 && matchesType) {row.style.display = ""; row.cells[0].innerText = counter++; row.setAttribute("data-visible-type", "true")} else {row.style.display = "none"; row.setAttribute("data-visible-type", "false")} }); updateButtonUI(!0)} else {filterByCategory(0, 0, "ALL"); updateButtonUI(!1)} })} }
     function updateButtonUI(isShowingSelected) {const viewBtn = document.getElementById("view-btn"); if (!viewBtn) return; if (isShowingSelected) {viewBtn.innerText = "SHOW ALL"; viewBtn.style.backgroundColor = "#2ecc71"} else {viewBtn.innerText = "SHOW SELECTED"; viewBtn.style.backgroundColor = "#f39c12"} }
+    function toggleAllSummaryCats(masterChk) {document.querySelectorAll(".summary-cat-chk").forEach((c) => {c.checked = masterChk.checked})}
     function showSummaryGrid(callback) {
       const rows = document.querySelectorAll("#product-body tr"); let summary = {}; let totalItems = 0; let grandTotal = 0; rows.forEach((row) => {
         const qty = parseFloat(row.querySelector(".qty-input").value) || 0; const matchesType = currentTypeFilter === "ALL" || row.getAttribute("data-type") === currentTypeFilter; if (qty > 0 && matchesType) {
@@ -1755,7 +1756,7 @@
               <table class="summary-table" style="width:100%; border-collapse: collapse; font-size: 13px; text-align: left; border: 1px solid #ddd;">
                   <thead>
                       <tr style="background: #1e3c72; color: white;">
-                          <th style="padding: 10px; text-align: center;">✓</th>
+                          <th style="padding: 10px; text-align: center;"><input type="checkbox" checked onclick="toggleAllSummaryCats(this)" style="width:18px; height:18px; cursor:pointer;"></th>
                           <th style="padding: 10px;">Category</th>
                           <th style="padding: 10px; text-align: center;">Qty</th>
                           <th style="padding: 10px; text-align: right;">Amount</th>
