@@ -1782,6 +1782,10 @@
                       </tr>
                   </tfoot>
               </table>
+          </div>
+          <div style="margin: 12px 2px 2px; padding: 10px 14px; background: #eaf2fb; border-left: 4px solid #1e3c72; border-radius: 6px; font-size: 12.5px; color: #1e3c72; display: flex; align-items: center; gap: 8px; text-align: left;">
+              <span style="font-size: 15px; line-height: 1;">ℹ️</span>
+              <span>ടിക് ചെയ്ത categories മാത്രം ലിസ്റ്റിൽ കാണിക്കും</span>
           </div>`; Swal.fire({title: '<span style="color: #1e3c72;">ഇൻഡന്‍റ് സമ്മറി</span>', html: gridHtml, width: "auto", confirmButtonText: "കാണിക്കുക (Show List)", confirmButtonColor: "#27ae60", showCancelButton: !0, cancelButtonText: "തിരുത്തുക", focusConfirm: !1, }).then((result) => {if (result.isConfirmed) {const excludedCats = new Set(); document.querySelectorAll(".summary-cat-chk").forEach((chk) => {if (!chk.checked) {excludedCats.add(chk.getAttribute("data-cat"))} }); callback("SELECTED", excludedCats)} else {callback("ALL")} })
     }
     async function saveDraft() {const draftData = {}; const inputs = document.querySelectorAll(".qty-input"); inputs.forEach((input, index) => {let qty = parseInt(input.value); if (qty && qty > 0) {const row = input.closest("tr"); const nameCell = row.querySelector(".med-name"); let cleanName = nameCell.childNodes[0].textContent.replace(/✏️/g, "").replace(/🗑️/g, "").replace(/\*/g, "").trim(); draftData[cleanName] = qty.toString()} }); const info = {details: document.getElementById("inst-details").value, budget: document.getElementById("total-budget").value, type: document.getElementById("indent-type").value, }; localStorage.setItem("rubun_draft", JSON.stringify(draftData)); localStorage.setItem("rubun_info", JSON.stringify(info)); if (typeof currentUser !== "undefined" && currentUser) {try {await db.collection("users").doc(currentUser.uid).collection("auto_draft").doc("working_draft").set({draftData: draftData, info: info, timestamp: firebase.firestore.FieldValue.serverTimestamp(), })} catch (e) {console.log("Silent Cloud Save Error: ", e)} } }
